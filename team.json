@@ -1,0 +1,27 @@
+{
+  "team_number": "T0042",
+  "group_lead": {
+    "name": "Chirag Atil",
+    "enrollment_no": "2501010125",
+    "github": "ChiragAntil07"
+  },
+  "members": [
+    {
+      "name": "Aryan",
+      "enrollment_no": "2501010090",
+      "github": "Aryan-sangwan-29"
+    },
+    {
+      "name": "Rohit ",
+      "enrollment_no": "2501010385",
+      "github": "rohit-771"
+    },
+    {
+      "name": "Priyal Tayal",
+      "enrollment_no": "2501010632",
+      "github": "priyaltayal2008-alt"
+    }
+  ],
+  "postgres_version": "18.6",
+  "laptop_used_for_benchmarks": "Macbook Pro, Apple M4, 16GB RAM"
+}
