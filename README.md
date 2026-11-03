@@ -771,3 +771,4 @@ SET is_gold_member = FALSE
 WHERE is_gold_member
   AND gold_expires_on < '2026-07-01';
 ```
+# Prera_DE_2026
