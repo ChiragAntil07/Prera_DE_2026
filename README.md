@@ -22,12 +22,12 @@
 
 | Role | Name | Enrollment No. | GitHub Username |
 |------|------|----------------|-----------------|
-| Group Lead | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+| Group Lead |Chirag Antil|2501010125|ChiragAntil07|
+| Member 2 |Aryan|2501010090|Aryan-sangwan-29|
+| Member 3 |Rohit|2501010385|rohit-771|
+| Member 4 |Priyal Tayal|2501010632|priyaltayal2008-alt|
 
-**Team No.:** ____ · **Section:** ____ · **Repository URL:** ____
+**Team No.:** T0042 · **Section:** C & E · **Repository URL:** https://github.com/ChiragAntil07/Prera_DE_2026/
 
 ---
 
