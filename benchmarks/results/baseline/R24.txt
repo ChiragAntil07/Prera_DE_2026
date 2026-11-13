@@ -1,0 +1,117 @@
+=== R24 run 1 ===
+Gather  (cost=1000.99..9427.72 rows=3 width=58) (actual time=17.398..18.692 rows=4.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=3598
+  ->  Nested Loop  (cost=0.99..8427.42 rows=2 width=58) (actual time=11.401..12.304 rows=2.00 loops=2)
+        Buffers: shared hit=3598
+        ->  Nested Loop  (cost=0.70..8410.80 rows=2 width=49) (actual time=11.390..12.291 rows=2.00 loops=2)
+              Buffers: shared hit=3585
+              ->  Parallel Seq Scan on order_items oi  (cost=0.00..5173.35 rows=2 width=17) (actual time=7.536..7.540 rows=2.00 loops=2)
+                    Filter: (order_id = 123457)
+                    Rows Removed by Filter: 187498
+                    Buffers: shared hit=2416
+              ->  Materialize  (cost=0.70..3237.43 rows=1 width=36) (actual time=1.926..2.374 rows=1.00 loops=4)
+                    Buffers: shared hit=1169
+                    ->  Nested Loop Left Join  (cost=0.70..3237.42 rows=1 width=36) (actual time=7.698..9.489 rows=1.00 loops=1)
+                          Buffers: shared hit=1169
+                          ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.032..0.032 rows=1.00 loops=1)
+                                Buffers: shared hit=9
+                                ->  Index Scan using orders_pkey on orders o  (cost=0.42..8.44 rows=1 width=21) (actual time=0.016..0.017 rows=1.00 loops=1)
+                                      Index Cond: (order_id = 123457)
+                                      Index Searches: 1
+                                      Buffers: shared hit=5
+                                ->  Index Scan using restaurants_pkey on restaurants r  (cost=0.28..8.30 rows=1 width=19) (actual time=0.013..0.013 rows=1.00 loops=1)
+                                      Index Cond: (restaurant_id = o.restaurant_id)
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                          ->  Seq Scan on payments p  (cost=0.00..3220.67 rows=1 width=8) (actual time=7.666..9.455 rows=1.00 loops=1)
+                                Filter: (((payment_status)::text = 'SUCCESS'::text) AND (order_id = 123457))
+                                Rows Removed by Filter: 137377
+                                Buffers: shared hit=1160
+        ->  Index Scan using menu_items_pkey on menu_items m  (cost=0.29..8.31 rows=1 width=17) (actual time=0.006..0.006 rows=1.00 loops=4)
+              Index Cond: (item_id = oi.item_id)
+              Index Searches: 4
+              Buffers: shared hit=13
+Planning:
+  Buffers: shared hit=276
+Planning Time: 1.074 ms
+Execution Time: 18.766 ms
+=== R24 run 2 ===
+Gather  (cost=1000.99..9427.72 rows=3 width=58) (actual time=18.560..19.798 rows=4.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=3598
+  ->  Nested Loop  (cost=0.99..8427.42 rows=2 width=58) (actual time=12.035..12.997 rows=2.00 loops=2)
+        Buffers: shared hit=3598
+        ->  Nested Loop  (cost=0.70..8410.80 rows=2 width=49) (actual time=12.027..12.987 rows=2.00 loops=2)
+              Buffers: shared hit=3585
+              ->  Parallel Seq Scan on order_items oi  (cost=0.00..5173.35 rows=2 width=17) (actual time=7.667..7.671 rows=2.00 loops=2)
+                    Filter: (order_id = 123457)
+                    Rows Removed by Filter: 187498
+                    Buffers: shared hit=2416
+              ->  Materialize  (cost=0.70..3237.43 rows=1 width=36) (actual time=2.180..2.657 rows=1.00 loops=4)
+                    Buffers: shared hit=1169
+                    ->  Nested Loop Left Join  (cost=0.70..3237.42 rows=1 width=36) (actual time=8.710..10.617 rows=1.00 loops=1)
+                          Buffers: shared hit=1169
+                          ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.034..0.034 rows=1.00 loops=1)
+                                Buffers: shared hit=9
+                                ->  Index Scan using orders_pkey on orders o  (cost=0.42..8.44 rows=1 width=21) (actual time=0.017..0.017 rows=1.00 loops=1)
+                                      Index Cond: (order_id = 123457)
+                                      Index Searches: 1
+                                      Buffers: shared hit=5
+                                ->  Index Scan using restaurants_pkey on restaurants r  (cost=0.28..8.30 rows=1 width=19) (actual time=0.014..0.014 rows=1.00 loops=1)
+                                      Index Cond: (restaurant_id = o.restaurant_id)
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                          ->  Seq Scan on payments p  (cost=0.00..3220.67 rows=1 width=8) (actual time=8.675..10.581 rows=1.00 loops=1)
+                                Filter: (((payment_status)::text = 'SUCCESS'::text) AND (order_id = 123457))
+                                Rows Removed by Filter: 137377
+                                Buffers: shared hit=1160
+        ->  Index Scan using menu_items_pkey on menu_items m  (cost=0.29..8.31 rows=1 width=17) (actual time=0.004..0.004 rows=1.00 loops=4)
+              Index Cond: (item_id = oi.item_id)
+              Index Searches: 4
+              Buffers: shared hit=13
+Planning:
+  Buffers: shared hit=276
+Planning Time: 0.944 ms
+Execution Time: 19.866 ms
+=== R24 run 3 ===
+Gather  (cost=1000.99..9427.72 rows=3 width=58) (actual time=17.570..18.926 rows=4.00 loops=1)
+  Workers Planned: 1
+  Workers Launched: 1
+  Buffers: shared hit=3598
+  ->  Nested Loop  (cost=0.99..8427.42 rows=2 width=58) (actual time=11.682..12.545 rows=2.00 loops=2)
+        Buffers: shared hit=3598
+        ->  Nested Loop  (cost=0.70..8410.80 rows=2 width=49) (actual time=11.673..12.534 rows=2.00 loops=2)
+              Buffers: shared hit=3585
+              ->  Parallel Seq Scan on order_items oi  (cost=0.00..5173.35 rows=2 width=17) (actual time=7.721..7.725 rows=2.00 loops=2)
+                    Filter: (order_id = 123457)
+                    Rows Removed by Filter: 187498
+                    Buffers: shared hit=2416
+              ->  Materialize  (cost=0.70..3237.43 rows=1 width=36) (actual time=1.976..2.404 rows=1.00 loops=4)
+                    Buffers: shared hit=1169
+                    ->  Nested Loop Left Join  (cost=0.70..3237.42 rows=1 width=36) (actual time=7.897..9.607 rows=1.00 loops=1)
+                          Buffers: shared hit=1169
+                          ->  Nested Loop  (cost=0.70..16.74 rows=1 width=32) (actual time=0.030..0.031 rows=1.00 loops=1)
+                                Buffers: shared hit=9
+                                ->  Index Scan using orders_pkey on orders o  (cost=0.42..8.44 rows=1 width=21) (actual time=0.015..0.015 rows=1.00 loops=1)
+                                      Index Cond: (order_id = 123457)
+                                      Index Searches: 1
+                                      Buffers: shared hit=5
+                                ->  Index Scan using restaurants_pkey on restaurants r  (cost=0.28..8.30 rows=1 width=19) (actual time=0.013..0.013 rows=1.00 loops=1)
+                                      Index Cond: (restaurant_id = o.restaurant_id)
+                                      Index Searches: 1
+                                      Buffers: shared hit=4
+                          ->  Seq Scan on payments p  (cost=0.00..3220.67 rows=1 width=8) (actual time=7.865..9.574 rows=1.00 loops=1)
+                                Filter: (((payment_status)::text = 'SUCCESS'::text) AND (order_id = 123457))
+                                Rows Removed by Filter: 137377
+                                Buffers: shared hit=1160
+        ->  Index Scan using menu_items_pkey on menu_items m  (cost=0.29..8.31 rows=1 width=17) (actual time=0.005..0.005 rows=1.00 loops=4)
+              Index Cond: (item_id = oi.item_id)
+              Index Searches: 4
+              Buffers: shared hit=13
+Planning:
+  Buffers: shared hit=276
+Planning Time: 0.883 ms
+Execution Time: 18.995 ms

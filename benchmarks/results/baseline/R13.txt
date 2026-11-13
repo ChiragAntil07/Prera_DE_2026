@@ -1,0 +1,42 @@
+=== R13 run 1 ===
+Seq Scan on delivery_partners p  (cost=4167.18..4225.18 rows=141 width=27) (actual time=10.858..10.859 rows=0.00 loops=1)
+  Filter: ((NOT (ANY (partner_id = (hashed SubPlan 1).col1))) AND (city_id = 1) AND ((status)::text = 'ACTIVE'::text))
+  Rows Removed by Filter: 2000
+  Buffers: shared hit=2311
+  SubPlan 1
+    ->  Seq Scan on orders o  (cost=0.00..4163.00 rows=1671 width=4) (actual time=10.196..10.355 rows=1648.00 loops=1)
+          Filter: (placed_at >= '2026-06-25 00:00:00+05:30'::timestamp with time zone)
+          Rows Removed by Filter: 148352
+          Buffers: shared hit=2288
+Planning:
+  Buffers: shared hit=107
+Planning Time: 0.454 ms
+Execution Time: 10.921 ms
+=== R13 run 2 ===
+Seq Scan on delivery_partners p  (cost=4167.18..4225.18 rows=141 width=27) (actual time=11.216..11.217 rows=0.00 loops=1)
+  Filter: ((NOT (ANY (partner_id = (hashed SubPlan 1).col1))) AND (city_id = 1) AND ((status)::text = 'ACTIVE'::text))
+  Rows Removed by Filter: 2000
+  Buffers: shared hit=2311
+  SubPlan 1
+    ->  Seq Scan on orders o  (cost=0.00..4163.00 rows=1671 width=4) (actual time=10.520..10.701 rows=1648.00 loops=1)
+          Filter: (placed_at >= '2026-06-25 00:00:00+05:30'::timestamp with time zone)
+          Rows Removed by Filter: 148352
+          Buffers: shared hit=2288
+Planning:
+  Buffers: shared hit=107
+Planning Time: 0.387 ms
+Execution Time: 11.278 ms
+=== R13 run 3 ===
+Seq Scan on delivery_partners p  (cost=4167.18..4225.18 rows=141 width=27) (actual time=11.073..11.074 rows=0.00 loops=1)
+  Filter: ((NOT (ANY (partner_id = (hashed SubPlan 1).col1))) AND (city_id = 1) AND ((status)::text = 'ACTIVE'::text))
+  Rows Removed by Filter: 2000
+  Buffers: shared hit=2311
+  SubPlan 1
+    ->  Seq Scan on orders o  (cost=0.00..4163.00 rows=1671 width=4) (actual time=10.394..10.580 rows=1648.00 loops=1)
+          Filter: (placed_at >= '2026-06-25 00:00:00+05:30'::timestamp with time zone)
+          Rows Removed by Filter: 148352
+          Buffers: shared hit=2288
+Planning:
+  Buffers: shared hit=107
+Planning Time: 0.381 ms
+Execution Time: 11.129 ms

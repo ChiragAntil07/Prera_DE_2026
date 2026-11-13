@@ -41,7 +41,7 @@ for f in $(ls "$TMP"/*.sql | sort -V); do
     else
       sql="SET search_path TO zomato; EXPLAIN (ANALYZE, BUFFERS) $query"
     fi
-    plan="$(printf '%s\n' "$sql" | psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
+	plan="$(printf '%s\n' "$sql" | PGHOST=/tmp PGUSER=postgres PGPORT=5432 psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
     echo "=== $id run $i ===" >> "$OUT/$id.txt"
     echo "$plan" >> "$OUT/$id.txt"
     t="$(echo "$plan" | grep -oE 'Execution Time: [0-9.]+' | awk '{print $3}')"

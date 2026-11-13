@@ -1,0 +1,75 @@
+=== R01 run 1 ===
+Limit  (cost=104.11..104.16 rows=20 width=62) (actual time=1.621..1.628 rows=20.00 loops=1)
+  Buffers: shared hit=68
+  ->  Sort  (cost=104.11..104.16 rows=22 width=62) (actual time=1.619..1.623 rows=20.00 loops=1)
+        Sort Key: r.rating DESC NULLS LAST
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=68
+        ->  Hash Join  (cost=2.26..103.62 rows=22 width=62) (actual time=0.191..1.537 rows=34.00 loops=1)
+              Hash Cond: (r.locality_id = l.locality_id)
+              Buffers: shared hit=65
+              ->  Seq Scan on restaurants r  (cost=0.00..95.25 rows=2232 width=66) (actual time=0.037..1.208 rows=2232.00 loops=1)
+                    Filter: ((status)::text = 'OPEN'::text)
+                    Rows Removed by Filter: 268
+                    Buffers: shared hit=64
+              ->  Hash  (cost=2.25..2.25 rows=1 width=4) (actual time=0.042..0.043 rows=1.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=1
+                    ->  Seq Scan on localities l  (cost=0.00..2.25 rows=1 width=4) (actual time=0.014..0.029 rows=1.00 loops=1)
+                          Filter: ((locality_name)::text = 'Koramangala'::text)
+                          Rows Removed by Filter: 99
+                          Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=206 read=1
+Planning Time: 1.949 ms
+Execution Time: 1.715 ms
+=== R01 run 2 ===
+Limit  (cost=104.11..104.16 rows=20 width=62) (actual time=0.509..0.512 rows=20.00 loops=1)
+  Buffers: shared hit=68
+  ->  Sort  (cost=104.11..104.16 rows=22 width=62) (actual time=0.508..0.509 rows=20.00 loops=1)
+        Sort Key: r.rating DESC NULLS LAST
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=68
+        ->  Hash Join  (cost=2.26..103.62 rows=22 width=62) (actual time=0.069..0.480 rows=34.00 loops=1)
+              Hash Cond: (r.locality_id = l.locality_id)
+              Buffers: shared hit=65
+              ->  Seq Scan on restaurants r  (cost=0.00..95.25 rows=2232 width=66) (actual time=0.015..0.354 rows=2232.00 loops=1)
+                    Filter: ((status)::text = 'OPEN'::text)
+                    Rows Removed by Filter: 268
+                    Buffers: shared hit=64
+              ->  Hash  (cost=2.25..2.25 rows=1 width=4) (actual time=0.016..0.016 rows=1.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=1
+                    ->  Seq Scan on localities l  (cost=0.00..2.25 rows=1 width=4) (actual time=0.005..0.011 rows=1.00 loops=1)
+                          Filter: ((locality_name)::text = 'Koramangala'::text)
+                          Rows Removed by Filter: 99
+                          Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=205
+Planning Time: 0.527 ms
+Execution Time: 0.544 ms
+=== R01 run 3 ===
+Limit  (cost=104.11..104.16 rows=20 width=62) (actual time=1.531..1.537 rows=20.00 loops=1)
+  Buffers: shared hit=68
+  ->  Sort  (cost=104.11..104.16 rows=22 width=62) (actual time=1.529..1.532 rows=20.00 loops=1)
+        Sort Key: r.rating DESC NULLS LAST
+        Sort Method: quicksort  Memory: 29kB
+        Buffers: shared hit=68
+        ->  Hash Join  (cost=2.26..103.62 rows=22 width=62) (actual time=0.190..1.448 rows=34.00 loops=1)
+              Hash Cond: (r.locality_id = l.locality_id)
+              Buffers: shared hit=65
+              ->  Seq Scan on restaurants r  (cost=0.00..95.25 rows=2232 width=66) (actual time=0.035..1.111 rows=2232.00 loops=1)
+                    Filter: ((status)::text = 'OPEN'::text)
+                    Rows Removed by Filter: 268
+                    Buffers: shared hit=64
+              ->  Hash  (cost=2.25..2.25 rows=1 width=4) (actual time=0.044..0.044 rows=1.00 loops=1)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    Buffers: shared hit=1
+                    ->  Seq Scan on localities l  (cost=0.00..2.25 rows=1 width=4) (actual time=0.016..0.030 rows=1.00 loops=1)
+                          Filter: ((locality_name)::text = 'Koramangala'::text)
+                          Rows Removed by Filter: 99
+                          Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=205
+Planning Time: 1.451 ms
+Execution Time: 1.627 ms
