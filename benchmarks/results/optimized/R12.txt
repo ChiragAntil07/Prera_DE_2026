@@ -1,0 +1,75 @@
+=== R12 run 1 ===
+Limit  (cost=26.16..26.17 rows=6 width=27) (actual time=0.476..0.479 rows=50.00 loops=1)
+  Buffers: shared hit=10 read=3
+  ->  Sort  (cost=26.16..26.17 rows=6 width=27) (actual time=0.476..0.477 rows=50.00 loops=1)
+        Sort Key: placed_at
+        Sort Method: quicksort  Memory: 30kB
+        Buffers: shared hit=10 read=3
+        ->  Index Scan using idx_orders_unassigned_dispatch on orders o  (cost=0.29..26.08 rows=6 width=27) (actual time=0.345..0.462 rows=75.00 loops=1)
+              Index Cond: ((status)::text = ANY ('{PLACED,ACCEPTED}'::text[]))
+              Index Searches: 2
+              Buffers: shared hit=7 read=3
+Planning:
+  Buffers: shared hit=269
+Planning Time: 0.372 ms
+Execution Time: 0.489 ms
+=== R12 run 2 ===
+Limit  (cost=26.16..26.17 rows=6 width=27) (actual time=0.037..0.040 rows=50.00 loops=1)
+  Buffers: shared hit=13
+  ->  Sort  (cost=26.16..26.17 rows=6 width=27) (actual time=0.037..0.038 rows=50.00 loops=1)
+        Sort Key: placed_at
+        Sort Method: quicksort  Memory: 30kB
+        Buffers: shared hit=13
+        ->  Index Scan using idx_orders_unassigned_dispatch on orders o  (cost=0.29..26.08 rows=6 width=27) (actual time=0.012..0.024 rows=75.00 loops=1)
+              Index Cond: ((status)::text = ANY ('{PLACED,ACCEPTED}'::text[]))
+              Index Searches: 2
+              Buffers: shared hit=10
+Planning:
+  Buffers: shared hit=269
+Planning Time: 0.371 ms
+Execution Time: 0.050 ms
+=== R12 run 3 ===
+Limit  (cost=26.16..26.17 rows=6 width=27) (actual time=0.037..0.039 rows=50.00 loops=1)
+  Buffers: shared hit=13
+  ->  Sort  (cost=26.16..26.17 rows=6 width=27) (actual time=0.036..0.038 rows=50.00 loops=1)
+        Sort Key: placed_at
+        Sort Method: quicksort  Memory: 30kB
+        Buffers: shared hit=13
+        ->  Index Scan using idx_orders_unassigned_dispatch on orders o  (cost=0.29..26.08 rows=6 width=27) (actual time=0.010..0.023 rows=75.00 loops=1)
+              Index Cond: ((status)::text = ANY ('{PLACED,ACCEPTED}'::text[]))
+              Index Searches: 2
+              Buffers: shared hit=10
+Planning:
+  Buffers: shared hit=269
+Planning Time: 0.399 ms
+Execution Time: 0.050 ms
+=== R12 run 4 ===
+Limit  (cost=26.16..26.17 rows=6 width=27) (actual time=0.041..0.044 rows=50.00 loops=1)
+  Buffers: shared hit=13
+  ->  Sort  (cost=26.16..26.17 rows=6 width=27) (actual time=0.041..0.042 rows=50.00 loops=1)
+        Sort Key: placed_at
+        Sort Method: quicksort  Memory: 30kB
+        Buffers: shared hit=13
+        ->  Index Scan using idx_orders_unassigned_dispatch on orders o  (cost=0.29..26.08 rows=6 width=27) (actual time=0.013..0.026 rows=75.00 loops=1)
+              Index Cond: ((status)::text = ANY ('{PLACED,ACCEPTED}'::text[]))
+              Index Searches: 2
+              Buffers: shared hit=10
+Planning:
+  Buffers: shared hit=269
+Planning Time: 0.414 ms
+Execution Time: 0.055 ms
+=== R12 run 5 ===
+Limit  (cost=26.16..26.17 rows=6 width=27) (actual time=0.036..0.039 rows=50.00 loops=1)
+  Buffers: shared hit=13
+  ->  Sort  (cost=26.16..26.17 rows=6 width=27) (actual time=0.036..0.037 rows=50.00 loops=1)
+        Sort Key: placed_at
+        Sort Method: quicksort  Memory: 30kB
+        Buffers: shared hit=13
+        ->  Index Scan using idx_orders_unassigned_dispatch on orders o  (cost=0.29..26.08 rows=6 width=27) (actual time=0.011..0.023 rows=75.00 loops=1)
+              Index Cond: ((status)::text = ANY ('{PLACED,ACCEPTED}'::text[]))
+              Index Searches: 2
+              Buffers: shared hit=10
+Planning:
+  Buffers: shared hit=269
+Planning Time: 0.375 ms
+Execution Time: 0.049 ms

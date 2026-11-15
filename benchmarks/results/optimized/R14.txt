@@ -1,0 +1,115 @@
+=== R14 run 1 ===
+Hash Right Semi Join  (cost=300.23..726.00 rows=59 width=20) (actual time=0.723..1.473 rows=379.00 loops=1)
+  Hash Cond: (o.customer_id = c.customer_id)
+  Buffers: shared hit=472 read=3
+  ->  Index Scan using idx_orders_placed_at_desc on orders o  (cost=0.42..376.94 rows=7976 width=4) (actual time=0.007..0.458 rows=8241.00 loops=1)
+        Index Cond: ((placed_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (placed_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+        Index Searches: 1
+        Buffers: shared hit=151
+  ->  Hash  (cost=297.49..297.49 rows=186 width=20) (actual time=0.711..0.712 rows=1230.00 loops=1)
+        Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 81kB
+        Buffers: shared hit=321 read=3
+        ->  Bitmap Heap Scan on customers c  (cost=5.72..297.49 rows=186 width=20) (actual time=0.363..0.652 rows=1230.00 loops=1)
+              Recheck Cond: ((gold_expires_on < '2026-07-01'::date) AND is_gold_member)
+              Heap Blocks: exact=321
+              Buffers: shared hit=321 read=3
+              ->  Bitmap Index Scan on idx_customers_gold_expires  (cost=0.00..5.67 rows=186 width=0) (actual time=0.345..0.345 rows=1230.00 loops=1)
+                    Index Cond: (gold_expires_on < '2026-07-01'::date)
+                    Index Searches: 1
+                    Buffers: shared read=3
+Planning:
+  Buffers: shared hit=406
+Planning Time: 0.686 ms
+Execution Time: 1.505 ms
+=== R14 run 2 ===
+Hash Right Semi Join  (cost=300.23..726.00 rows=59 width=20) (actual time=0.398..1.325 rows=379.00 loops=1)
+  Hash Cond: (o.customer_id = c.customer_id)
+  Buffers: shared hit=475
+  ->  Index Scan using idx_orders_placed_at_desc on orders o  (cost=0.42..376.94 rows=7976 width=4) (actual time=0.007..0.548 rows=8241.00 loops=1)
+        Index Cond: ((placed_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (placed_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+        Index Searches: 1
+        Buffers: shared hit=151
+  ->  Hash  (cost=297.49..297.49 rows=186 width=20) (actual time=0.387..0.388 rows=1230.00 loops=1)
+        Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 81kB
+        Buffers: shared hit=324
+        ->  Bitmap Heap Scan on customers c  (cost=5.72..297.49 rows=186 width=20) (actual time=0.050..0.329 rows=1230.00 loops=1)
+              Recheck Cond: ((gold_expires_on < '2026-07-01'::date) AND is_gold_member)
+              Heap Blocks: exact=321
+              Buffers: shared hit=324
+              ->  Bitmap Index Scan on idx_customers_gold_expires  (cost=0.00..5.67 rows=186 width=0) (actual time=0.032..0.032 rows=1230.00 loops=1)
+                    Index Cond: (gold_expires_on < '2026-07-01'::date)
+                    Index Searches: 1
+                    Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=406
+Planning Time: 0.604 ms
+Execution Time: 1.359 ms
+=== R14 run 3 ===
+Hash Right Semi Join  (cost=300.23..726.00 rows=59 width=20) (actual time=0.483..1.335 rows=379.00 loops=1)
+  Hash Cond: (o.customer_id = c.customer_id)
+  Buffers: shared hit=475
+  ->  Index Scan using idx_orders_placed_at_desc on orders o  (cost=0.42..376.94 rows=7976 width=4) (actual time=0.009..0.517 rows=8241.00 loops=1)
+        Index Cond: ((placed_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (placed_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+        Index Searches: 1
+        Buffers: shared hit=151
+  ->  Hash  (cost=297.49..297.49 rows=186 width=20) (actual time=0.468..0.468 rows=1230.00 loops=1)
+        Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 81kB
+        Buffers: shared hit=324
+        ->  Bitmap Heap Scan on customers c  (cost=5.72..297.49 rows=186 width=20) (actual time=0.064..0.390 rows=1230.00 loops=1)
+              Recheck Cond: ((gold_expires_on < '2026-07-01'::date) AND is_gold_member)
+              Heap Blocks: exact=321
+              Buffers: shared hit=324
+              ->  Bitmap Index Scan on idx_customers_gold_expires  (cost=0.00..5.67 rows=186 width=0) (actual time=0.041..0.041 rows=1230.00 loops=1)
+                    Index Cond: (gold_expires_on < '2026-07-01'::date)
+                    Index Searches: 1
+                    Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=406
+Planning Time: 0.627 ms
+Execution Time: 1.370 ms
+=== R14 run 4 ===
+Hash Right Semi Join  (cost=300.23..726.00 rows=59 width=20) (actual time=0.402..1.068 rows=379.00 loops=1)
+  Hash Cond: (o.customer_id = c.customer_id)
+  Buffers: shared hit=475
+  ->  Index Scan using idx_orders_placed_at_desc on orders o  (cost=0.42..376.94 rows=7976 width=4) (actual time=0.007..0.412 rows=8241.00 loops=1)
+        Index Cond: ((placed_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (placed_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+        Index Searches: 1
+        Buffers: shared hit=151
+  ->  Hash  (cost=297.49..297.49 rows=186 width=20) (actual time=0.390..0.391 rows=1230.00 loops=1)
+        Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 81kB
+        Buffers: shared hit=324
+        ->  Bitmap Heap Scan on customers c  (cost=5.72..297.49 rows=186 width=20) (actual time=0.049..0.332 rows=1230.00 loops=1)
+              Recheck Cond: ((gold_expires_on < '2026-07-01'::date) AND is_gold_member)
+              Heap Blocks: exact=321
+              Buffers: shared hit=324
+              ->  Bitmap Index Scan on idx_customers_gold_expires  (cost=0.00..5.67 rows=186 width=0) (actual time=0.032..0.032 rows=1230.00 loops=1)
+                    Index Cond: (gold_expires_on < '2026-07-01'::date)
+                    Index Searches: 1
+                    Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=406
+Planning Time: 0.626 ms
+Execution Time: 1.099 ms
+=== R14 run 5 ===
+Hash Right Semi Join  (cost=300.23..726.00 rows=59 width=20) (actual time=0.454..1.248 rows=379.00 loops=1)
+  Hash Cond: (o.customer_id = c.customer_id)
+  Buffers: shared hit=475
+  ->  Index Scan using idx_orders_placed_at_desc on orders o  (cost=0.42..376.94 rows=7976 width=4) (actual time=0.008..0.485 rows=8241.00 loops=1)
+        Index Cond: ((placed_at >= '2026-06-01 00:00:00+05:30'::timestamp with time zone) AND (placed_at < '2026-07-01 00:00:00+05:30'::timestamp with time zone))
+        Index Searches: 1
+        Buffers: shared hit=151
+  ->  Hash  (cost=297.49..297.49 rows=186 width=20) (actual time=0.441..0.441 rows=1230.00 loops=1)
+        Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 81kB
+        Buffers: shared hit=324
+        ->  Bitmap Heap Scan on customers c  (cost=5.72..297.49 rows=186 width=20) (actual time=0.057..0.378 rows=1230.00 loops=1)
+              Recheck Cond: ((gold_expires_on < '2026-07-01'::date) AND is_gold_member)
+              Heap Blocks: exact=321
+              Buffers: shared hit=324
+              ->  Bitmap Index Scan on idx_customers_gold_expires  (cost=0.00..5.67 rows=186 width=0) (actual time=0.038..0.038 rows=1230.00 loops=1)
+                    Index Cond: (gold_expires_on < '2026-07-01'::date)
+                    Index Searches: 1
+                    Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=406
+Planning Time: 0.726 ms
+Execution Time: 1.282 ms
