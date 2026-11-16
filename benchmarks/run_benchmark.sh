@@ -1,62 +1,144 @@
+
 #!/usr/bin/env bash
-# Runs every query in queries/workload_30.sql with EXPLAIN (ANALYZE, BUFFERS)
-# RUNS times (default 3), records the average and median execution time, and saves the raw plans.
+# Runs marked queries with EXPLAIN (ANALYZE, BUFFERS), recording timing and scan details.
+# WRITE queries run inside BEGIN/ROLLBACK.
 #
-# Usage:   ./benchmarks/run_benchmark.sh <database> <baseline|optimized> [runs] [workload.sql]
-# Example: ./benchmarks/run_benchmark.sh capstone baseline
-#          ./benchmarks/run_benchmark.sh capstone optimized 3 sql/06_optimized_queries.sql
-#
-# Connection settings come from the usual libpq variables (PGHOST, PGPORT, PGUSER).
-# Queries are split on "-- @R1" / "-- @W1" marker lines; "-- @END" stops collection.
-#
-# WRITE queries (W*) run inside BEGIN ... ROLLBACK, so your data does not change.
+# Usage: ./benchmarks/run_benchmark.sh <database> <baseline|optimized|seed_check|large> [runs] [workload.sql]
+# Connection settings use the usual libpq variables (PGHOST, PGPORT, PGUSER).
 set -euo pipefail
 
 DB="${1:?database name required}"
-PHASE="${2:?phase required: baseline | optimized}"
+PHASE="${2:?phase required: baseline | optimized | seed_check | large}"
+case "$PHASE" in
+    baseline|optimized|seed_check|large|before|after) ;;
+    *)
+        echo "ERROR: Unsupported phase: $PHASE" >&2
+        exit 2
+        ;;
+esac
 RUNS="${3:-3}"
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKLOAD="${4:-$ROOT/queries/workload_30.sql}"
 OUT="$ROOT/benchmarks/results/$PHASE"
 SUMMARY="$OUT/summary.csv"
+
+# Validate number of runs
+if ! [[ "$RUNS" =~ ^[1-9][0-9]*$ ]]; then
+    echo "ERROR: RUNS must be a positive integer."
+    exit 1
+fi
+
+# Validate workload file
+if [[ ! -f "$WORKLOAD" ]]; then
+    echo "ERROR: Workload file not found: $WORKLOAD"
+    exit 1
+fi
+
 mkdir -p "$OUT"
 echo "query_id,type,avg_ms,median_ms,min_ms,max_ms,scan_nodes" > "$SUMMARY"
 
-# Split the workload file on "-- @ID" markers into one temp file per query
 TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
+
+# Extract queries using marker lines
 awk -v dir="$TMP" '
-  /^-- @/ { id = ""; if ($2 ~ /^@[RW][0-9]+$/) { id = substr($2, 2); file = dir "/" id ".sql"; printf "" > file }; next }
-  id != "" && !/^--/ { print >> file }
+    /^-- @/ {
+        id = ""
+        if ($2 ~ /^@[RW][0-9]+$/) {
+            id = substr($2, 2)
+            file = dir "/" id ".sql"
+            printf "" > file
+        }
+        next
+    }
+
+    id != "" && !/^--/ {
+        print >> file
+    }
 ' "$WORKLOAD"
 
-for f in $(ls "$TMP"/*.sql | sort -V); do
-  id="$(basename "$f" .sql)"
-  type="READ"; [[ "$id" == W* ]] && type="WRITE"
-  query="$(cat "$f")"
-  times=()
-  : > "$OUT/$id.txt"
-  for ((i = 1; i <= RUNS; i++)); do
-    if [[ "$type" == "WRITE" ]]; then
-      sql="SET search_path TO zomato; BEGIN; EXPLAIN (ANALYZE, BUFFERS) $query ROLLBACK;"
-    else
-      sql="SET search_path TO zomato; EXPLAIN (ANALYZE, BUFFERS) $query"
-    fi
-	plan="$(printf '%s\n' "$sql" | psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
-    echo "=== $id run $i ===" >> "$OUT/$id.txt"
-    echo "$plan" >> "$OUT/$id.txt"
-    t="$(echo "$plan" | grep -oE 'Execution Time: [0-9.]+' | awk '{print $3}')"
-    times+=("$t")
-  done
-  sorted=($(printf '%s\n' "${times[@]}" | sort -g))
-  median="${sorted[$((RUNS / 2))]}"
-  avg="$(printf '%s\n' "${times[@]}" | awk '{ s += $1 } END { printf "%.3f", s / NR }')"
-  # every scan node in the last run's plan, e.g. "Seq Scan on orders | Index Scan using customers_pkey on customers"
-  node="$(echo "$plan" | grep -oE '(Parallel )?(Seq Scan|Index Scan|Index Only Scan|Bitmap Heap Scan|Bitmap Index Scan)( Backward)?( using [a-z0-9_]+)? on [a-z0-9_]+' | sed -E 's/Parallel //; s/ Backward//' | awk '!seen[$0]++' | paste -sd'|' - | sed 's/|/ | /g' || true)"
-  # grep exits 1 when nothing matches (e.g. a plain INSERT); don't let set -e abort the run
-  node="${node:-(no scan)}"
-  echo "$id,$type,$avg,$median,${sorted[0]},${sorted[$((RUNS - 1))]},$node" >> "$SUMMARY"
-  printf '%-4s %-5s avg %9s ms   %s\n' "$id" "$type" "$avg" "$node"
+# Confirm all 30 queries were extracted
+COUNT=$(find "$TMP" -name '*.sql' | wc -l | tr -d ' ')
+
+if [[ "$COUNT" -ne 30 ]]; then
+    echo "ERROR: Expected 30 queries, but extracted $COUNT."
+    exit 1
+fi
+
+echo "Database: $DB"
+echo "Runs per query: $RUNS"
+echo "Queries found: $COUNT"
+echo "--------------------------------------------"
+
+shopt -s nullglob
+FILES=("$TMP"/*.sql)
+
+# Sort query files naturally
+IFS=$'\n' FILES=($(printf '%s\n' "${FILES[@]}" | sort -V))
+unset IFS
+
+for f in "${FILES[@]}"; do
+
+    id="$(basename "$f" .sql)"
+    type="READ"
+
+    [[ "$id" == W* ]] && type="WRITE"
+
+    query="$(cat "$f")"
+    times=()
+    plan=""
+
+    : > "$OUT/$id.txt"
+
+    for ((i = 1; i <= RUNS; i++)); do
+
+        if [[ "$type" == "WRITE" ]]; then
+            sql="SET search_path TO zomato; BEGIN; EXPLAIN (ANALYZE, BUFFERS) $query ROLLBACK;"
+        else
+            sql="SET search_path TO zomato; EXPLAIN (ANALYZE, BUFFERS) $query"
+        fi
+
+        plan="$(printf '%s\n' "$sql" |
+            psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
+
+        echo "=== $id run $i ===" >> "$OUT/$id.txt"
+        echo "$plan" >> "$OUT/$id.txt"
+
+        t="$(echo "$plan" |
+            grep -oE 'Execution Time: [0-9.]+' |
+            awk '{print $3}')"
+
+        if [[ -z "$t" ]]; then
+            echo "ERROR: Could not extract execution time for $id."
+            exit 1
+        fi
+
+        times+=("$t")
+    done
+
+    sorted=($(printf '%s\n' "${times[@]}" | sort -g))
+
+    median="${sorted[$((RUNS / 2))]}"
+
+    avg="$(printf '%s\n' "${times[@]}" |
+        awk '{s += $1} END {printf "%.3f", s / NR}')"
+
+    node="$(echo "$plan" |
+        grep -oE '(Parallel )?(Seq Scan|Index Scan|Index Only Scan|Bitmap Heap Scan|Bitmap Index Scan)( Backward)?( using [a-z0-9_]+)? on [a-z0-9_]+' |
+        sed -E 's/Parallel //; s/ Backward//' |
+        awk '!seen[$0]++' |
+        paste -sd'|' - |
+        sed 's/|/ | /g' || true)"
+
+    node="${node:-(no scan)}"
+
+    echo "$id,$type,$avg,$median,${sorted[0]},${sorted[$((RUNS - 1))]},$node" >> "$SUMMARY"
+
+    printf '%-4s %-5s avg %9s ms   %s\n' "$id" "$type" "$avg" "$node"
 done
-rm -rf "$TMP"
-echo "Workload: $WORKLOAD"
-echo "Saved raw plans and summary to $OUT"
+
+echo "--------------------------------------------"
+echo "Completed: $COUNT queries"
+echo "Summary saved to: $SUMMARY"
+echo "Raw plans saved to: $OUT/"

@@ -1,0 +1,330 @@
+=== R19 run 1 ===
+Sort  (cost=5246.34..5246.97 rows=250 width=470) (actual time=13.190..13.199 rows=400.00 loops=1)
+  Sort Key: (max(o.placed_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 49kB
+  Buffers: shared hit=3165
+  CTE blr_restaurants
+    ->  Hash Join  (cost=2.38..98.22 rows=250 width=19) (actual time=0.027..0.211 rows=400.00 loops=1)
+          Hash Cond: (r.locality_id = l.locality_id)
+          Buffers: shared hit=65
+          ->  Seq Scan on restaurants r  (cost=0.00..89.00 rows=2500 width=23) (actual time=0.005..0.112 rows=2500.00 loops=1)
+                Buffers: shared hit=64
+          ->  Hash  (cost=2.25..2.25 rows=10 width=4) (actual time=0.018..0.018 rows=10.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                Buffers: shared hit=1
+                ->  Seq Scan on localities l  (cost=0.00..2.25 rows=10 width=4) (actual time=0.004..0.016 rows=10.00 loops=1)
+                      Filter: (city_id = 1)
+                      Rows Removed by Filter: 90
+                      Buffers: shared hit=1
+  ->  Hash Right Join  (cost=5066.96..5138.17 rows=250 width=470) (actual time=13.060..13.148 rows=400.00 loops=1)
+        Hash Cond: (v.restaurant_id = b.restaurant_id)
+        Buffers: shared hit=3162
+        ->  HashAggregate  (cost=475.12..510.97 rows=2390 width=36) (actual time=1.001..1.056 rows=384.00 loops=1)
+              Group Key: v.restaurant_id
+              Batches: 1  Memory Usage: 129kB
+              Buffers: shared hit=809
+              ->  Nested Loop  (cost=5.92..454.63 rows=4099 width=8) (actual time=0.047..0.698 rows=6306.00 loops=1)
+                    Buffers: shared hit=809
+                    ->  HashAggregate  (cost=5.62..8.12 rows=250 width=4) (actual time=0.040..0.052 rows=400.00 loops=1)
+                          Group Key: blr_restaurants.restaurant_id
+                          Batches: 1  Memory Usage: 56kB
+                          ->  CTE Scan on blr_restaurants  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.012 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                    ->  Index Only Scan using idx_reviews_restaurant on reviews v  (cost=0.29..1.63 rows=16 width=8) (actual time=0.001..0.001 rows=15.77 loops=400)
+                          Index Cond: (restaurant_id = blr_restaurants.restaurant_id)
+                          Heap Fetches: 0
+                          Index Searches: 400
+                          Buffers: shared hit=809
+        ->  Hash  (cost=4588.71..4588.71 rows=250 width=438) (actual time=12.057..12.057 rows=400.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 36kB
+              Buffers: shared hit=2353
+              ->  Hash Right Join  (cost=4529.45..4588.71 rows=250 width=438) (actual time=11.977..12.032 rows=400.00 loops=1)
+                    Hash Cond: (o.restaurant_id = b.restaurant_id)
+                    Buffers: shared hit=2353
+                    ->  HashAggregate  (cost=4521.33..4545.23 rows=2390 width=20) (actual time=11.712..11.735 rows=384.00 loops=1)
+                          Group Key: o.restaurant_id
+                          Batches: 1  Memory Usage: 121kB
+                          Buffers: shared hit=2288
+                          ->  Hash Semi Join  (cost=8.12..4364.43 rows=15690 width=23) (actual time=0.036..10.261 rows=24106.00 loops=1)
+                                Hash Cond: (o.restaurant_id = blr_restaurants_1.restaurant_id)
+                                Buffers: shared hit=2288
+                                ->  Seq Scan on orders o  (cost=0.00..3788.00 rows=150000 width=23) (actual time=0.003..3.906 rows=150000.00 loops=1)
+                                      Buffers: shared hit=2288
+                                ->  Hash  (cost=5.00..5.00 rows=250 width=4) (actual time=0.030..0.030 rows=400.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 23kB
+                                      ->  CTE Scan on blr_restaurants blr_restaurants_1  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.015 rows=400.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 35kB
+                    ->  Hash  (cost=5.00..5.00 rows=250 width=422) (actual time=0.261..0.261 rows=400.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=65
+                          ->  CTE Scan on blr_restaurants b  (cost=0.00..5.00 rows=250 width=422) (actual time=0.027..0.248 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                                Buffers: shared hit=65
+Planning:
+  Buffers: shared hit=429
+Planning Time: 0.898 ms
+Execution Time: 13.283 ms
+=== R19 run 2 ===
+Sort  (cost=5246.34..5246.97 rows=250 width=470) (actual time=12.780..12.787 rows=400.00 loops=1)
+  Sort Key: (max(o.placed_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 49kB
+  Buffers: shared hit=3165
+  CTE blr_restaurants
+    ->  Hash Join  (cost=2.38..98.22 rows=250 width=19) (actual time=0.017..0.203 rows=400.00 loops=1)
+          Hash Cond: (r.locality_id = l.locality_id)
+          Buffers: shared hit=65
+          ->  Seq Scan on restaurants r  (cost=0.00..89.00 rows=2500 width=23) (actual time=0.005..0.107 rows=2500.00 loops=1)
+                Buffers: shared hit=64
+          ->  Hash  (cost=2.25..2.25 rows=10 width=4) (actual time=0.008..0.008 rows=10.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                Buffers: shared hit=1
+                ->  Seq Scan on localities l  (cost=0.00..2.25 rows=10 width=4) (actual time=0.004..0.006 rows=10.00 loops=1)
+                      Filter: (city_id = 1)
+                      Rows Removed by Filter: 90
+                      Buffers: shared hit=1
+  ->  Hash Right Join  (cost=5066.96..5138.17 rows=250 width=470) (actual time=12.652..12.738 rows=400.00 loops=1)
+        Hash Cond: (v.restaurant_id = b.restaurant_id)
+        Buffers: shared hit=3162
+        ->  HashAggregate  (cost=475.12..510.97 rows=2390 width=36) (actual time=0.999..1.053 rows=384.00 loops=1)
+              Group Key: v.restaurant_id
+              Batches: 1  Memory Usage: 129kB
+              Buffers: shared hit=809
+              ->  Nested Loop  (cost=5.92..454.63 rows=4099 width=8) (actual time=0.046..0.694 rows=6306.00 loops=1)
+                    Buffers: shared hit=809
+                    ->  HashAggregate  (cost=5.62..8.12 rows=250 width=4) (actual time=0.038..0.050 rows=400.00 loops=1)
+                          Group Key: blr_restaurants.restaurant_id
+                          Batches: 1  Memory Usage: 56kB
+                          ->  CTE Scan on blr_restaurants  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.010 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                    ->  Index Only Scan using idx_reviews_restaurant on reviews v  (cost=0.29..1.63 rows=16 width=8) (actual time=0.001..0.001 rows=15.77 loops=400)
+                          Index Cond: (restaurant_id = blr_restaurants.restaurant_id)
+                          Heap Fetches: 0
+                          Index Searches: 400
+                          Buffers: shared hit=809
+        ->  Hash  (cost=4588.71..4588.71 rows=250 width=438) (actual time=11.650..11.650 rows=400.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 36kB
+              Buffers: shared hit=2353
+              ->  Hash Right Join  (cost=4529.45..4588.71 rows=250 width=438) (actual time=11.568..11.621 rows=400.00 loops=1)
+                    Hash Cond: (o.restaurant_id = b.restaurant_id)
+                    Buffers: shared hit=2353
+                    ->  HashAggregate  (cost=4521.33..4545.23 rows=2390 width=20) (actual time=11.310..11.333 rows=384.00 loops=1)
+                          Group Key: o.restaurant_id
+                          Batches: 1  Memory Usage: 121kB
+                          Buffers: shared hit=2288
+                          ->  Hash Semi Join  (cost=8.12..4364.43 rows=15690 width=23) (actual time=0.036..9.906 rows=24106.00 loops=1)
+                                Hash Cond: (o.restaurant_id = blr_restaurants_1.restaurant_id)
+                                Buffers: shared hit=2288
+                                ->  Seq Scan on orders o  (cost=0.00..3788.00 rows=150000 width=23) (actual time=0.003..3.784 rows=150000.00 loops=1)
+                                      Buffers: shared hit=2288
+                                ->  Hash  (cost=5.00..5.00 rows=250 width=4) (actual time=0.030..0.030 rows=400.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 23kB
+                                      ->  CTE Scan on blr_restaurants blr_restaurants_1  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.015 rows=400.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 35kB
+                    ->  Hash  (cost=5.00..5.00 rows=250 width=422) (actual time=0.254..0.254 rows=400.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=65
+                          ->  CTE Scan on blr_restaurants b  (cost=0.00..5.00 rows=250 width=422) (actual time=0.017..0.241 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                                Buffers: shared hit=65
+Planning:
+  Buffers: shared hit=429
+Planning Time: 0.880 ms
+Execution Time: 12.905 ms
+=== R19 run 3 ===
+Sort  (cost=5246.34..5246.97 rows=250 width=470) (actual time=12.799..12.807 rows=400.00 loops=1)
+  Sort Key: (max(o.placed_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 49kB
+  Buffers: shared hit=3165
+  CTE blr_restaurants
+    ->  Hash Join  (cost=2.38..98.22 rows=250 width=19) (actual time=0.013..0.178 rows=400.00 loops=1)
+          Hash Cond: (r.locality_id = l.locality_id)
+          Buffers: shared hit=65
+          ->  Seq Scan on restaurants r  (cost=0.00..89.00 rows=2500 width=23) (actual time=0.003..0.093 rows=2500.00 loops=1)
+                Buffers: shared hit=64
+          ->  Hash  (cost=2.25..2.25 rows=10 width=4) (actual time=0.007..0.007 rows=10.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                Buffers: shared hit=1
+                ->  Seq Scan on localities l  (cost=0.00..2.25 rows=10 width=4) (actual time=0.003..0.005 rows=10.00 loops=1)
+                      Filter: (city_id = 1)
+                      Rows Removed by Filter: 90
+                      Buffers: shared hit=1
+  ->  Hash Right Join  (cost=5066.96..5138.17 rows=250 width=470) (actual time=12.670..12.757 rows=400.00 loops=1)
+        Hash Cond: (v.restaurant_id = b.restaurant_id)
+        Buffers: shared hit=3162
+        ->  HashAggregate  (cost=475.12..510.97 rows=2390 width=36) (actual time=1.048..1.103 rows=384.00 loops=1)
+              Group Key: v.restaurant_id
+              Batches: 1  Memory Usage: 129kB
+              Buffers: shared hit=809
+              ->  Nested Loop  (cost=5.92..454.63 rows=4099 width=8) (actual time=0.044..0.730 rows=6306.00 loops=1)
+                    Buffers: shared hit=809
+                    ->  HashAggregate  (cost=5.62..8.12 rows=250 width=4) (actual time=0.036..0.048 rows=400.00 loops=1)
+                          Group Key: blr_restaurants.restaurant_id
+                          Batches: 1  Memory Usage: 56kB
+                          ->  CTE Scan on blr_restaurants  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.011 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                    ->  Index Only Scan using idx_reviews_restaurant on reviews v  (cost=0.29..1.63 rows=16 width=8) (actual time=0.001..0.001 rows=15.77 loops=400)
+                          Index Cond: (restaurant_id = blr_restaurants.restaurant_id)
+                          Heap Fetches: 0
+                          Index Searches: 400
+                          Buffers: shared hit=809
+        ->  Hash  (cost=4588.71..4588.71 rows=250 width=438) (actual time=11.619..11.619 rows=400.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 36kB
+              Buffers: shared hit=2353
+              ->  Hash Right Join  (cost=4529.45..4588.71 rows=250 width=438) (actual time=11.536..11.593 rows=400.00 loops=1)
+                    Hash Cond: (o.restaurant_id = b.restaurant_id)
+                    Buffers: shared hit=2353
+                    ->  HashAggregate  (cost=4521.33..4545.23 rows=2390 width=20) (actual time=11.309..11.334 rows=384.00 loops=1)
+                          Group Key: o.restaurant_id
+                          Batches: 1  Memory Usage: 121kB
+                          Buffers: shared hit=2288
+                          ->  Hash Semi Join  (cost=8.12..4364.43 rows=15690 width=23) (actual time=0.031..9.917 rows=24106.00 loops=1)
+                                Hash Cond: (o.restaurant_id = blr_restaurants_1.restaurant_id)
+                                Buffers: shared hit=2288
+                                ->  Seq Scan on orders o  (cost=0.00..3788.00 rows=150000 width=23) (actual time=0.002..3.791 rows=150000.00 loops=1)
+                                      Buffers: shared hit=2288
+                                ->  Hash  (cost=5.00..5.00 rows=250 width=4) (actual time=0.026..0.026 rows=400.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 23kB
+                                      ->  CTE Scan on blr_restaurants blr_restaurants_1  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.013 rows=400.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 35kB
+                    ->  Hash  (cost=5.00..5.00 rows=250 width=422) (actual time=0.223..0.223 rows=400.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=65
+                          ->  CTE Scan on blr_restaurants b  (cost=0.00..5.00 rows=250 width=422) (actual time=0.014..0.212 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                                Buffers: shared hit=65
+Planning:
+  Buffers: shared hit=429
+Planning Time: 0.801 ms
+Execution Time: 12.882 ms
+=== R19 run 4 ===
+Sort  (cost=5246.34..5246.97 rows=250 width=470) (actual time=12.855..12.864 rows=400.00 loops=1)
+  Sort Key: (max(o.placed_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 49kB
+  Buffers: shared hit=3165
+  CTE blr_restaurants
+    ->  Hash Join  (cost=2.38..98.22 rows=250 width=19) (actual time=0.014..0.181 rows=400.00 loops=1)
+          Hash Cond: (r.locality_id = l.locality_id)
+          Buffers: shared hit=65
+          ->  Seq Scan on restaurants r  (cost=0.00..89.00 rows=2500 width=23) (actual time=0.004..0.098 rows=2500.00 loops=1)
+                Buffers: shared hit=64
+          ->  Hash  (cost=2.25..2.25 rows=10 width=4) (actual time=0.007..0.007 rows=10.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                Buffers: shared hit=1
+                ->  Seq Scan on localities l  (cost=0.00..2.25 rows=10 width=4) (actual time=0.003..0.005 rows=10.00 loops=1)
+                      Filter: (city_id = 1)
+                      Rows Removed by Filter: 90
+                      Buffers: shared hit=1
+  ->  Hash Right Join  (cost=5066.96..5138.17 rows=250 width=470) (actual time=12.714..12.811 rows=400.00 loops=1)
+        Hash Cond: (v.restaurant_id = b.restaurant_id)
+        Buffers: shared hit=3162
+        ->  HashAggregate  (cost=475.12..510.97 rows=2390 width=36) (actual time=1.023..1.083 rows=384.00 loops=1)
+              Group Key: v.restaurant_id
+              Batches: 1  Memory Usage: 129kB
+              Buffers: shared hit=809
+              ->  Nested Loop  (cost=5.92..454.63 rows=4099 width=8) (actual time=0.050..0.712 rows=6306.00 loops=1)
+                    Buffers: shared hit=809
+                    ->  HashAggregate  (cost=5.62..8.12 rows=250 width=4) (actual time=0.040..0.052 rows=400.00 loops=1)
+                          Group Key: blr_restaurants.restaurant_id
+                          Batches: 1  Memory Usage: 56kB
+                          ->  CTE Scan on blr_restaurants  (cost=0.00..5.00 rows=250 width=4) (actual time=0.001..0.011 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                    ->  Index Only Scan using idx_reviews_restaurant on reviews v  (cost=0.29..1.63 rows=16 width=8) (actual time=0.001..0.001 rows=15.77 loops=400)
+                          Index Cond: (restaurant_id = blr_restaurants.restaurant_id)
+                          Heap Fetches: 0
+                          Index Searches: 400
+                          Buffers: shared hit=809
+        ->  Hash  (cost=4588.71..4588.71 rows=250 width=438) (actual time=11.687..11.687 rows=400.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 36kB
+              Buffers: shared hit=2353
+              ->  Hash Right Join  (cost=4529.45..4588.71 rows=250 width=438) (actual time=11.601..11.655 rows=400.00 loops=1)
+                    Hash Cond: (o.restaurant_id = b.restaurant_id)
+                    Buffers: shared hit=2353
+                    ->  HashAggregate  (cost=4521.33..4545.23 rows=2390 width=20) (actual time=11.373..11.396 rows=384.00 loops=1)
+                          Group Key: o.restaurant_id
+                          Batches: 1  Memory Usage: 121kB
+                          Buffers: shared hit=2288
+                          ->  Hash Semi Join  (cost=8.12..4364.43 rows=15690 width=23) (actual time=0.032..9.980 rows=24106.00 loops=1)
+                                Hash Cond: (o.restaurant_id = blr_restaurants_1.restaurant_id)
+                                Buffers: shared hit=2288
+                                ->  Seq Scan on orders o  (cost=0.00..3788.00 rows=150000 width=23) (actual time=0.002..3.839 rows=150000.00 loops=1)
+                                      Buffers: shared hit=2288
+                                ->  Hash  (cost=5.00..5.00 rows=250 width=4) (actual time=0.026..0.027 rows=400.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 23kB
+                                      ->  CTE Scan on blr_restaurants blr_restaurants_1  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.013 rows=400.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 35kB
+                    ->  Hash  (cost=5.00..5.00 rows=250 width=422) (actual time=0.224..0.224 rows=400.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=65
+                          ->  CTE Scan on blr_restaurants b  (cost=0.00..5.00 rows=250 width=422) (actual time=0.015..0.212 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                                Buffers: shared hit=65
+Planning:
+  Buffers: shared hit=429
+Planning Time: 0.799 ms
+Execution Time: 12.962 ms
+=== R19 run 5 ===
+Sort  (cost=5246.34..5246.97 rows=250 width=470) (actual time=12.490..12.498 rows=400.00 loops=1)
+  Sort Key: (max(o.placed_at)) DESC NULLS LAST
+  Sort Method: quicksort  Memory: 49kB
+  Buffers: shared hit=3165
+  CTE blr_restaurants
+    ->  Hash Join  (cost=2.38..98.22 rows=250 width=19) (actual time=0.015..0.180 rows=400.00 loops=1)
+          Hash Cond: (r.locality_id = l.locality_id)
+          Buffers: shared hit=65
+          ->  Seq Scan on restaurants r  (cost=0.00..89.00 rows=2500 width=23) (actual time=0.004..0.095 rows=2500.00 loops=1)
+                Buffers: shared hit=64
+          ->  Hash  (cost=2.25..2.25 rows=10 width=4) (actual time=0.007..0.008 rows=10.00 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                Buffers: shared hit=1
+                ->  Seq Scan on localities l  (cost=0.00..2.25 rows=10 width=4) (actual time=0.003..0.005 rows=10.00 loops=1)
+                      Filter: (city_id = 1)
+                      Rows Removed by Filter: 90
+                      Buffers: shared hit=1
+  ->  Hash Right Join  (cost=5066.96..5138.17 rows=250 width=470) (actual time=12.362..12.449 rows=400.00 loops=1)
+        Hash Cond: (v.restaurant_id = b.restaurant_id)
+        Buffers: shared hit=3162
+        ->  HashAggregate  (cost=475.12..510.97 rows=2390 width=36) (actual time=1.012..1.067 rows=384.00 loops=1)
+              Group Key: v.restaurant_id
+              Batches: 1  Memory Usage: 129kB
+              Buffers: shared hit=809
+              ->  Nested Loop  (cost=5.92..454.63 rows=4099 width=8) (actual time=0.044..0.702 rows=6306.00 loops=1)
+                    Buffers: shared hit=809
+                    ->  HashAggregate  (cost=5.62..8.12 rows=250 width=4) (actual time=0.036..0.048 rows=400.00 loops=1)
+                          Group Key: blr_restaurants.restaurant_id
+                          Batches: 1  Memory Usage: 56kB
+                          ->  CTE Scan on blr_restaurants  (cost=0.00..5.00 rows=250 width=4) (actual time=0.001..0.012 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                    ->  Index Only Scan using idx_reviews_restaurant on reviews v  (cost=0.29..1.63 rows=16 width=8) (actual time=0.001..0.001 rows=15.77 loops=400)
+                          Index Cond: (restaurant_id = blr_restaurants.restaurant_id)
+                          Heap Fetches: 0
+                          Index Searches: 400
+                          Buffers: shared hit=809
+        ->  Hash  (cost=4588.71..4588.71 rows=250 width=438) (actual time=11.347..11.347 rows=400.00 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 36kB
+              Buffers: shared hit=2353
+              ->  Hash Right Join  (cost=4529.45..4588.71 rows=250 width=438) (actual time=11.267..11.321 rows=400.00 loops=1)
+                    Hash Cond: (o.restaurant_id = b.restaurant_id)
+                    Buffers: shared hit=2353
+                    ->  HashAggregate  (cost=4521.33..4545.23 rows=2390 width=20) (actual time=11.037..11.060 rows=384.00 loops=1)
+                          Group Key: o.restaurant_id
+                          Batches: 1  Memory Usage: 121kB
+                          Buffers: shared hit=2288
+                          ->  Hash Semi Join  (cost=8.12..4364.43 rows=15690 width=23) (actual time=0.032..9.683 rows=24106.00 loops=1)
+                                Hash Cond: (o.restaurant_id = blr_restaurants_1.restaurant_id)
+                                Buffers: shared hit=2288
+                                ->  Seq Scan on orders o  (cost=0.00..3788.00 rows=150000 width=23) (actual time=0.002..3.728 rows=150000.00 loops=1)
+                                      Buffers: shared hit=2288
+                                ->  Hash  (cost=5.00..5.00 rows=250 width=4) (actual time=0.026..0.026 rows=400.00 loops=1)
+                                      Buckets: 1024  Batches: 1  Memory Usage: 23kB
+                                      ->  CTE Scan on blr_restaurants blr_restaurants_1  (cost=0.00..5.00 rows=250 width=4) (actual time=0.000..0.014 rows=400.00 loops=1)
+                                            Storage: Memory  Maximum Storage: 35kB
+                    ->  Hash  (cost=5.00..5.00 rows=250 width=422) (actual time=0.226..0.226 rows=400.00 loops=1)
+                          Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                          Buffers: shared hit=65
+                          ->  CTE Scan on blr_restaurants b  (cost=0.00..5.00 rows=250 width=422) (actual time=0.015..0.214 rows=400.00 loops=1)
+                                Storage: Memory  Maximum Storage: 35kB
+                                Buffers: shared hit=65
+Planning:
+  Buffers: shared hit=429
+Planning Time: 0.814 ms
+Execution Time: 12.602 ms

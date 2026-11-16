@@ -1,0 +1,50 @@
+=== W01 run 1 ===
+Insert on orders  (cost=0.00..0.01 rows=0 width=0) (actual time=0.670..0.670 rows=0.00 loops=1)
+  Buffers: shared hit=165 read=2 dirtied=8
+  ->  Result  (cost=0.00..0.01 rows=1 width=364) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.032 ms
+Trigger for constraint orders_customer_id_fkey: time=0.271 calls=1
+Trigger for constraint orders_restaurant_id_fkey: time=0.169 calls=1
+Trigger for constraint orders_partner_id_fkey: time=0.007 calls=1
+Trigger for constraint orders_coupon_code_fkey: time=0.005 calls=1
+Execution Time: 1.135 ms
+=== W01 run 2 ===
+Insert on orders  (cost=0.00..0.01 rows=0 width=0) (actual time=0.192..0.193 rows=0.00 loops=1)
+  Buffers: shared hit=168 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=364) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.031 ms
+Trigger for constraint orders_customer_id_fkey: time=0.250 calls=1
+Trigger for constraint orders_restaurant_id_fkey: time=0.132 calls=1
+Trigger for constraint orders_partner_id_fkey: time=0.006 calls=1
+Trigger for constraint orders_coupon_code_fkey: time=0.004 calls=1
+Execution Time: 0.596 ms
+=== W01 run 3 ===
+Insert on orders  (cost=0.00..0.01 rows=0 width=0) (actual time=0.211..0.212 rows=0.00 loops=1)
+  Buffers: shared hit=168 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=364) (actual time=0.003..0.003 rows=1.00 loops=1)
+Planning Time: 0.034 ms
+Trigger for constraint orders_customer_id_fkey: time=0.249 calls=1
+Trigger for constraint orders_restaurant_id_fkey: time=0.130 calls=1
+Trigger for constraint orders_partner_id_fkey: time=0.006 calls=1
+Trigger for constraint orders_coupon_code_fkey: time=0.005 calls=1
+Execution Time: 0.614 ms
+=== W01 run 4 ===
+Insert on orders  (cost=0.00..0.01 rows=0 width=0) (actual time=0.196..0.196 rows=0.00 loops=1)
+  Buffers: shared hit=168 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=364) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.032 ms
+Trigger for constraint orders_customer_id_fkey: time=0.249 calls=1
+Trigger for constraint orders_restaurant_id_fkey: time=0.130 calls=1
+Trigger for constraint orders_partner_id_fkey: time=0.006 calls=1
+Trigger for constraint orders_coupon_code_fkey: time=0.004 calls=1
+Execution Time: 0.595 ms
+=== W01 run 5 ===
+Insert on orders  (cost=0.00..0.01 rows=0 width=0) (actual time=0.198..0.199 rows=0.00 loops=1)
+  Buffers: shared hit=168 dirtied=1
+  ->  Result  (cost=0.00..0.01 rows=1 width=364) (actual time=0.002..0.002 rows=1.00 loops=1)
+Planning Time: 0.033 ms
+Trigger for constraint orders_customer_id_fkey: time=0.267 calls=1
+Trigger for constraint orders_restaurant_id_fkey: time=0.157 calls=1
+Trigger for constraint orders_partner_id_fkey: time=0.008 calls=1
+Trigger for constraint orders_coupon_code_fkey: time=0.005 calls=1
+Execution Time: 0.647 ms

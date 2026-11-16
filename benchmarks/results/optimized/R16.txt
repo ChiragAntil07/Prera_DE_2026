@@ -1,0 +1,90 @@
+=== R16 run 1 ===
+Sort  (cost=11.91..11.92 rows=4 width=12) (actual time=0.376..0.376 rows=3.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=4 read=2
+  ->  HashAggregate  (cost=11.83..11.87 rows=4 width=12) (actual time=0.368..0.368 rows=3.00 loops=1)
+        Group Key: method
+        Batches: 1  Memory Usage: 32kB
+        Buffers: shared hit=1 read=2
+        ->  Index Only Scan using idx_payments_failed_partial on payments  (cost=0.28..11.43 rows=80 width=4) (actual time=0.359..0.361 rows=82.00 loops=1)
+              Index Cond: (attempted_at >= '2026-06-24 00:00:00+05:30'::timestamp with time zone)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=1 read=2
+Planning:
+  Buffers: shared hit=185
+Planning Time: 0.287 ms
+Execution Time: 0.396 ms
+=== R16 run 2 ===
+Sort  (cost=11.91..11.92 rows=4 width=12) (actual time=0.044..0.044 rows=3.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=6
+  ->  HashAggregate  (cost=11.83..11.87 rows=4 width=12) (actual time=0.035..0.036 rows=3.00 loops=1)
+        Group Key: method
+        Batches: 1  Memory Usage: 32kB
+        Buffers: shared hit=3
+        ->  Index Only Scan using idx_payments_failed_partial on payments  (cost=0.28..11.43 rows=80 width=4) (actual time=0.025..0.027 rows=82.00 loops=1)
+              Index Cond: (attempted_at >= '2026-06-24 00:00:00+05:30'::timestamp with time zone)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=185
+Planning Time: 0.292 ms
+Execution Time: 0.065 ms
+=== R16 run 3 ===
+Sort  (cost=11.91..11.92 rows=4 width=12) (actual time=0.044..0.045 rows=3.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=6
+  ->  HashAggregate  (cost=11.83..11.87 rows=4 width=12) (actual time=0.036..0.037 rows=3.00 loops=1)
+        Group Key: method
+        Batches: 1  Memory Usage: 32kB
+        Buffers: shared hit=3
+        ->  Index Only Scan using idx_payments_failed_partial on payments  (cost=0.28..11.43 rows=80 width=4) (actual time=0.026..0.028 rows=82.00 loops=1)
+              Index Cond: (attempted_at >= '2026-06-24 00:00:00+05:30'::timestamp with time zone)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=185
+Planning Time: 0.276 ms
+Execution Time: 0.065 ms
+=== R16 run 4 ===
+Sort  (cost=11.91..11.92 rows=4 width=12) (actual time=0.052..0.052 rows=3.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=6
+  ->  HashAggregate  (cost=11.83..11.87 rows=4 width=12) (actual time=0.043..0.044 rows=3.00 loops=1)
+        Group Key: method
+        Batches: 1  Memory Usage: 32kB
+        Buffers: shared hit=3
+        ->  Index Only Scan using idx_payments_failed_partial on payments  (cost=0.28..11.43 rows=80 width=4) (actual time=0.030..0.033 rows=82.00 loops=1)
+              Index Cond: (attempted_at >= '2026-06-24 00:00:00+05:30'::timestamp with time zone)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=185
+Planning Time: 0.302 ms
+Execution Time: 0.075 ms
+=== R16 run 5 ===
+Sort  (cost=11.91..11.92 rows=4 width=12) (actual time=0.040..0.041 rows=3.00 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=6
+  ->  HashAggregate  (cost=11.83..11.87 rows=4 width=12) (actual time=0.033..0.033 rows=3.00 loops=1)
+        Group Key: method
+        Batches: 1  Memory Usage: 32kB
+        Buffers: shared hit=3
+        ->  Index Only Scan using idx_payments_failed_partial on payments  (cost=0.28..11.43 rows=80 width=4) (actual time=0.023..0.025 rows=82.00 loops=1)
+              Index Cond: (attempted_at >= '2026-06-24 00:00:00+05:30'::timestamp with time zone)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=3
+Planning:
+  Buffers: shared hit=185
+Planning Time: 0.274 ms
+Execution Time: 0.060 ms
