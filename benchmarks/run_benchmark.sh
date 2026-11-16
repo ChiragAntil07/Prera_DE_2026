@@ -2,9 +2,9 @@
 # Runs every query in queries/workload_30.sql with EXPLAIN (ANALYZE, BUFFERS)
 # RUNS times (default 3), records the average and median execution time, and saves the raw plans.
 #
-# Usage:   ./benchmarks/run_benchmark.sh <database> <before|after> [runs] [workload.sql]
-# Example: ./benchmarks/run_benchmark.sh capstone before
-#          ./benchmarks/run_benchmark.sh capstone after 3 sql/06_optimized_queries.sql
+# Usage:   ./benchmarks/run_benchmark.sh <database> <baseline|optimized> [runs] [workload.sql]
+# Example: ./benchmarks/run_benchmark.sh capstone baseline
+#          ./benchmarks/run_benchmark.sh capstone optimized 3 sql/06_optimized_queries.sql
 #
 # Connection settings come from the usual libpq variables (PGHOST, PGPORT, PGUSER).
 # Queries are split on "-- @R1" / "-- @W1" marker lines; "-- @END" stops collection.
@@ -13,7 +13,7 @@
 set -euo pipefail
 
 DB="${1:?database name required}"
-PHASE="${2:?phase required: before | after}"
+PHASE="${2:?phase required: baseline | optimized}"
 RUNS="${3:-3}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKLOAD="${4:-$ROOT/queries/workload_30.sql}"
@@ -41,7 +41,7 @@ for f in $(ls "$TMP"/*.sql | sort -V); do
     else
       sql="SET search_path TO zomato; EXPLAIN (ANALYZE, BUFFERS) $query"
     fi
-	plan="$(printf '%s\n' "$sql" | PGHOST=/tmp PGUSER=postgres PGPORT=5432 psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
+	plan="$(printf '%s\n' "$sql" | psql -d "$DB" -X -q -A -t -v ON_ERROR_STOP=1)"
     echo "=== $id run $i ===" >> "$OUT/$id.txt"
     echo "$plan" >> "$OUT/$id.txt"
     t="$(echo "$plan" | grep -oE 'Execution Time: [0-9.]+' | awk '{print $3}')"

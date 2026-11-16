@@ -48,7 +48,7 @@ The database contains 11 tables and successfully loads all provided seed data.
 | restaurant_id | INTEGER | PRIMARY KEY | Unique restaurant identifier |
 | name | VARCHAR(200) | — | Restaurant name |
 | locality_id | INTEGER | FOREIGN KEY | References localities |
-| cuisines | TEXT | — | Cuisine information |
+| cuisines | TEXT[] | — | Cuisine labels |
 | avg_cost_for_two | NUMERIC(10,2) | — | Average cost |
 | rating | NUMERIC(3,1) | — | Restaurant rating |
 | rating_count | INTEGER | — | Number of ratings |
@@ -194,7 +194,7 @@ The schema is designed with relational normalization principles.
 - Second Normal Form (2NF): Tables with single-column primary keys have no partial dependency on a composite key.
 - Third Normal Form (3NF): Descriptive attributes are separated into related entities to reduce unnecessary duplication.
 
-The `cuisines` attribute in restaurants is stored as TEXT. Its atomicity and normalization should be reviewed based on the actual data representation.
+The `cuisines` attribute is stored as a PostgreSQL text array to match the CSV representation and support array membership queries.
 
 ## 6. Data Loading and Verification
 

@@ -101,6 +101,7 @@ The scan types below were identified from the generated baseline `summary.csv`. 
 
 - **R19 is the slowest query**, averaging 8493.191 ms (approximately 8.49 seconds).
 - **R25 is the fastest read query**, averaging 0.701 ms.
+- **R13 returns zero rows in all baseline runs.** Its `NOT IN` subquery includes NULL `partner_id` values (214 recent orders in the seed data), which makes the predicate unknown for every partner. Keep the required baseline workload unchanged; rewrite this predicate with `NOT EXISTS` in the optimized workload.
 - Sequential scans appear frequently throughout the baseline workload.
 - Some queries use primary-key index scans, including R04, R07, and R24.
 - Queries involving scans across multiple tables generally have higher execution times in this workload, although the exact bottleneck depends on the full execution plan.
