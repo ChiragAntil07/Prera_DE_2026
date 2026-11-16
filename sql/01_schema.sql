@@ -54,7 +54,7 @@ CREATE TABLE restaurants (
     restaurant_id INTEGER PRIMARY KEY,
     name VARCHAR(200),
     locality_id INTEGER REFERENCES localities(locality_id),
-    cuisines TEXT,
+    cuisines TEXT[],
     avg_cost_for_two NUMERIC(10,2),
     rating NUMERIC(3,1),
     rating_count INTEGER,
